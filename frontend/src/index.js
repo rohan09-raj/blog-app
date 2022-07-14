@@ -8,7 +8,6 @@ import App from "./App";
 import reducers from "./reducers";
 
 import "./index.css";
-import { ThemeProvider } from "@mui/styles";
 
 const store = legacy_createStore(reducers, compose(applyMiddleware(thunk)));
 

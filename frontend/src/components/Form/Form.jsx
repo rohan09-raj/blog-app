@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 
 import useStyles from "./styles";
 import { createPost, updatePost } from "../../actions/posts";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Form = ({ currentId, setCurrentId }) => {
   const [postData, setPostData] = useState({
@@ -17,13 +18,14 @@ const Form = ({ currentId, setCurrentId }) => {
   });
 
   const post = useSelector((state) =>
-    currentId ? state.posts.find((p) => p._id === currentId) : null
+    currentId ? state.posts.posts.find((p) => p._id === currentId) : null
   );
 
   const user = JSON.parse(localStorage.getItem("profile"));
 
   const classes = useStyles();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (post) {
@@ -33,12 +35,12 @@ const Form = ({ currentId, setCurrentId }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (currentId) {
+    if (currentId === 0) {
+      dispatch(createPost({ ...postData, name: user?.result?.name }, navigate));
+    } else {
       dispatch(
         updatePost(currentId, { ...postData, name: user?.result?.name })
       );
-    } else {
-      dispatch(createPost({ ...postData, name: user?.result?.name }));
     }
     clear();
   };
@@ -64,7 +66,7 @@ const Form = ({ currentId, setCurrentId }) => {
   };
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <form
         className={`${classes.root} ${classes.form}`}
         autoComplete="off"
